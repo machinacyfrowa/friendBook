@@ -1,16 +1,25 @@
 <?php
+//pobierz sobie z url ID profilu 
+if(isset($_GET['profileID'])) {
+    //jesli istnieje profile id w url (w linku) to podstaw
+    $id = $_GET['profileID'];
+} else {
+    //jeśli nie istnieje w linku (nie podano) to ustaw 1
+    $id = 1;
+}
+
 
 //kwerenda pobiera jeden profil z tabeli po jego id
-$sql = "SELECT * FROM profile WHERE ID=? LIMIT 1";
+$sql = "SELECT * FROM profile 
+        LEFT JOIN photo ON profile.profilePhotoID = photo.ID
+        WHERE profile.ID=? 
+        LIMIT 1";
 
 //połącz się z bazą danych
 $db = new mysqli('localhost', 'root', '', 'friendBook');
 
 //przygotuj kwerendę do wysłania
 $query = $db->prepare($sql);
-
-//zdefiniuj tymczasowo id na stałe
-$id = 2;
 
 //podstaw ID
 $query->bind_param('i', $id);
@@ -28,6 +37,7 @@ $result = $query->get_result()->fetch_assoc();
 $firstName = $result['firstName'];
 $lastName = $result['lastName'];
 $description = $result['description'];
+$profilePhotoUrl = $result['url']
 ?>
 
 <!DOCTYPE html>
@@ -43,7 +53,8 @@ $description = $result['description'];
         <span id="name">
             <?php echo $firstName." ".$lastName; ?>
         </span>
-        <img src="https://picsum.photos/600/600" alt="" id="profilePhoto">
+        <img src="<?php echo $profilePhotoUrl; ?>" 
+            alt="" id="profilePhoto">
         <p id="profileDescription">
             <?php echo $description; ?>
         </p>
