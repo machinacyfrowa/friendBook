@@ -25,5 +25,37 @@ class User {
         //zwróć wynik rejestracji
         return $result;
     }
+    static function Login(string $email, string $password) : bool {
+        //poniższa funkcja odpowiada za logowanie użytkownika
+        //połączenie do bazy danych
+        $db = new mysqli('localhost', 'root', '', 'friendbook');
+        //tworzymy w języku SQL zapytanie, tam gdzie chcemy uzyć
+        //zmiennych wstawiamy "?"
+        $sql = "SELECT * FROM user WHERE email = ?";
+        //tworzymy obiekt zapytania
+        $q = $db->prepare($sql);
+        //Podstawiamy pod znaki zapytania zmienne w kolejności
+        //zaistnienia w kwerendzie
+        $q->bind_param("s", $email);
+        //wykonujemy kwerendę
+        $result = $q->execute();
+        //jeśli kwerenda nie powiodła się zwróć false
+        if(!$result)
+            return false;
+        //chainowanie funkcji
+        //$row to będzie jeden wiersz z bazy danych, potencjalnie
+        //zawierający naszego użytkownika
+        $row = $q->get_result()->fetch_assoc();
+        //sprawdz czy hasło z formularza pasuje do hasha z bazy
+        if(password_verify($password, $row['password']))
+        {
+            //na tym etapie wiemy, że hasło pasuje
+            //poki co zwróć true jeśli jest zalogowany lub false jeśli nie
+            return true;
+        }
+        else 
+            return false;
+        
+    }
 }
 ?>
