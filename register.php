@@ -35,6 +35,9 @@ if (isset($_REQUEST['email']) && isset($_REQUEST['password'])) {
 
                 <button type="submit" class="btn btn-primary w-100 mt-3">Zarejestruj</button>
             </form>
+                <a href="index.php">
+                <button class="btn btn-primary w-100 mt-3">Powrót</button>
+                </a>
             <?php
             if (isset($result)) {
                 if ($result) {
