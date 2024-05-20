@@ -3,6 +3,17 @@ class User {
     //klasa user ma zawierać wszystkie informacje i czynności związane z użytkownikiem portalu
     //modelem w bazie danych jest tabela user
 
+    private int $_id;
+    private string $_email;
+    
+    //konstruktor tworzy egzemplarz obiektu user i zapisuje
+    //w nim id i email użytkownika
+    public function __construct(int $id, string $email)
+    {
+        $this->_id = $id;
+        $this->_email = $email;
+    }
+
     static function Register(string $email, string $password) : bool {
         //poniższa funkcja odpowiada za dodanie użytkownika do właściwej tabeli w bazie danych
         //user{id INT, email VARCHAR(128), password VARCHAR(128)}
@@ -50,6 +61,9 @@ class User {
         if(password_verify($password, $row['password']))
         {
             //na tym etapie wiemy, że hasło pasuje
+            $u = new User($row['ID'], $row['email']);
+            //zapis do sesji
+            $_SESSION['user'] = $u;
             //poki co zwróć true jeśli jest zalogowany lub false jeśli nie
             return true;
         }
